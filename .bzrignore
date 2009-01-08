@@ -1,0 +1,6 @@
+.cvsignore
+CVS
+*.lo
+z
+debian/files
+debian/autoztool

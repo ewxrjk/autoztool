@@ -1,0 +1,45 @@
+#! /usr/bin/make -f
+#
+
+INSTALL=install
+
+build:
+	$(MAKE) prefix=/usr
+
+cleanpkg-autoztool:
+	rm -rf debian/autoztool
+
+pkg-autoztool:
+	rm -rf debian/autoztool
+	mkdir -p debian/autoztool
+	mkdir -p debian/autoztool/DEBIAN
+	mkdir -p debian/autoztool/usr/share/doc/autoztool
+	cp debian/copyright \
+		debian/autoztool/usr/share/doc/autoztool/copyright
+	cp debian/changelog \
+		debian/autoztool/usr/share/doc/autoztool/changelog.Debian
+	gzip -9 debian/autoztool/usr/share/doc/autoztool/copyright \
+		debian/autoztool/usr/share/doc/autoztool/changelog.Debian
+	mkdir -p debian/autoztool/usr/bin
+	mkdir -p debian/autoztool/usr/lib/autoztool
+	mkdir -p debian/autoztool/usr/share/man/man1
+	$(INSTALL) -m 755 z \
+		debian/autoztool/usr/bin/z
+	$(INSTALL) -m 644 z.1 \
+		debian/autoztool/usr/share/man/man1/z.1
+	gzip -9 debian/autoztool/usr/share/man/man1/z.1
+	$(INSTALL) -m 755 autoztool.so debian/autoztool/usr/lib/autoztool/autoztool.so
+	dpkg-gencontrol -isp -pautoztool -Pdebian/autoztool
+	chown -R root:root debian/autoztool
+	chmod -R g-ws debian/autoztool
+	dpkg --build debian/autoztool ..
+
+
+binary: binary-arch binary-indep
+binary-arch:  pkg-autoztool
+binary-indep: 
+
+clean:  cleanpkg-autoztool
+	$(MAKE) distclean
+	rm -f debian/files
+	rm -f debian/substvars

@@ -1,0 +1,25 @@
+2003-08-18 23:30:28  Richard Kettlewell  <rjk@greenend.org.uk>
+
+        * Version 0.2
+        
+2003-08-18 23:29:38  Richard Kettlewell  <rjk@greenend.org.uk>
+
+        * added a debian/ directory.
+        
+2003-08-18 23:23:59  Richard Kettlewell  <rjk@greenend.org.uk>
+
+        * Makefile, README, autoztool.c, z.m4: update copyright dates
+        
+2003-08-18 23:08:43  Richard Kettlewell  <rjk@greenend.org.uk>
+
+        * Makefile, z.1, z.m4: --help and --version options
+        
+2003-08-18 22:51:07  Richard Kettlewell  <rjk@greenend.org.uk>
+
+        * autoztool.c: intercept __open64 too, fixes bug reported by Chris
+	Walker.
+        
+2003-08-18 22:47:52  Richard Kettlewell  <rjk@greenend.org.uk>
+
+        * Makefile: extra standard targets
+        

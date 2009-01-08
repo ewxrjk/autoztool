@@ -1,0 +1,71 @@
+.TH z 1
+.SH NAME
+z \- automatic inline decompression tool
+.SH SYNOPSIS
+.B z
+.RB [ -- ]
+.IR command ...
+.SH DESCRIPTION
+.B z
+executes the command found on its command line, in an environment in
+which compressed files are automatically and mostly transparently
+decompressed when they are opened for reading.  The intent is to use
+it with commands like
+.BR less (1)
+to enable graceful handling of compressed files.
+.PP
+.B z
+is like
+.BR nohup (1)
+or
+.BR exec (1),
+in that it just executes the argument array passed to it, rather than
+parsing it as a shell command.  Any I/O redirections will be processed
+by the shell before invoking
+.BR z .
+For example, the command:
+.PP
+.nf
+  z less < truss-geneaology.text.gz
+.fi
+.PP
+will not decompress the file to view.  The proper invocation is:
+.PP
+.nf
+  z less truss-geneaology.text.gz
+.fi
+.PP
+.B z
+does not work on statically linked programs.  Currently the compressed
+extensions supported are .gz, .Z, .bz2 and (sort of) .bz.  If there is
+not enough space in
+.I /tmp
+(or
+.B TMPDIR
+if that is set) then it won't work.
+.SH OPTIONS
+The following options are supported:
+.TP
+.B --help
+Issues a help message.
+.TP
+.B --version
+Displays the version number.
+.TP
+.B --
+End of options.
+.SH ENVIRONMENT
+.TP
+.B TMPDIR
+.B z
+will create a decompressed temporary file in this directory.  If it is
+not set,
+.I /tmp
+is used.
+.TP
+.B LD_PRELOAD
+.B z
+adds an object to this variable to implement the automatic
+decompression.
+.SH AUTHOR
+Richard Kettlewell, rjk@greenend.org.uk
