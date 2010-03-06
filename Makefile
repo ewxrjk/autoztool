@@ -41,11 +41,7 @@ z: z.m4 Makefile
 autoztool.so: autoztool.lo
 	gcc -shared -o autoztool.so autoztool.lo -ldl -lc
 
-install:
-	@set -e;if test ! -d $(libdir)/autoztool; then \
-		echo mkdir -p $(libdir)/autoztool; \
-		mkdir -p $(libdir)/autoztool; \
-	fi
+install: installdirs
 	$(INSTALL) -m 755 z $(bindir)/z
 	$(INSTALL) -m 644 autoztool.so $(libdir)/autoztool/autoztool.so 
 	$(INSTALL) -m 644 z.1 $(man1dir)/z.1
@@ -56,9 +52,11 @@ uninstall:
 	rm -f $(bindir)/z
 	rm -f $(libdir)/autoztool/autoztool.so
 	rm -f $(man1dir)/z.1
+	rm -f $(libdir)/autoztool
 
 installdirs:
 	mkdir -p $(libdir)
+	mkdir -p $(libdir)/autoztool
 	mkdir -p $(bindir)
 	mkdir -p $(man1dir)
 
@@ -72,12 +70,22 @@ dist:
 	mkdir autoztool-${VERSION}
 	cp COPYING Makefile README *.c z.m4 z.1 autoztool-${VERSION} 
 	mkdir autoztool-${VERSION}/debian
-	cp debian/autorules.m4 debian/changelog autoztool-${VERSION}/debian
+	cp debian/changelog autoztool-${VERSION}/debian
 	cp debian/control debian/copyright autoztool-${VERSION}/debian
-	cp debian/rules.m4 debian/rules autoztool-${VERSION}/debian
+	cp debian/rules autoztool-${VERSION}/debian
 	chmod +x autoztool-${VERSION}/debian/rules
 	tar cf autoztool-${VERSION}.tar autoztool-${VERSION}
-	gzip -9vf autoztool-${VERSION}.tar 
+	gzip -9vf autoztool-${VERSION}.tar
+	rm -rf autoztool-${VERSION}
+
+distcheck: dist
+	tar xfz autoztool-${VERSION}.tar.gz
+	cd autoztool-${VERSION} && make
+	cd autoztool-${VERSION} && make install prefix=distcheck/usr/local
+	rm -rf autoztool-${VERSION}
 
 %.lo : %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -fpic -c $< -o $@
+
+echo-version:
+	@echo "$(VERSION)"

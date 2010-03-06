@@ -5,3 +5,5 @@ z
 debian/files
 debian/autoztool
 debian/substvars.*
+autoztool-*.tar.gz
+*.deb
