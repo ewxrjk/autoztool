@@ -2,6 +2,8 @@ Source: autoztool
 Maintainer: Richard Kettlewell <richard+autoztool@sfere.greenend.org.uk>
 Priority: optional
 Standards-Version: 3.0.1.0
+Vcs-Bzr: http://www.greenend.org.uk/rjk/bzr/autoztool.dev/
+Homepage: http://www.greenend.org.uk/rjk/2001/05/autoztool.html
 
 Package: autoztool
 Architecture: any
