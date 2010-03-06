@@ -2,6 +2,7 @@
 #
 
 INSTALL=install
+CHANGELOG=changelog
 
 build:
 	$(MAKE) prefix=/usr
@@ -17,8 +18,8 @@ pkg-autoztool:
 	cp debian/copyright \
 		debian/autoztool/usr/share/doc/autoztool/copyright
 	cp debian/changelog \
-		debian/autoztool/usr/share/doc/autoztool/changelog.Debian
-	gzip -9 debian/autoztool/usr/share/doc/autoztool/changelog.Debian
+		debian/autoztool/usr/share/doc/autoztool/${CHANGELOG}
+	gzip -9 debian/autoztool/usr/share/doc/autoztool/${CHANGELOG}
 	mkdir -p debian/autoztool/usr/bin
 	mkdir -p debian/autoztool/usr/lib/autoztool
 	mkdir -p debian/autoztool/usr/share/man/man1

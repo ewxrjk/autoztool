@@ -1,8 +1,6 @@
-# $Header: /cvs/autoztool/Makefile,v 1.6 2003-08-18 22:30:28 richard Exp $
-
 #
 # This file is part of autoztool
-# Copyright (C) 2001, 2003 Richard Kettlewell
+# Copyright (C) 2001, 2003, 2010 Richard Kettlewell
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,7 +25,7 @@ mandir=${prefix}/man
 man1dir=${mandir}/man1
 pkglibdir=${libdir}/autoztool
 
-VERSION=0.2
+VERSION=0.2.1
 
 CC=gcc
 CFLAGS=-Wall -W

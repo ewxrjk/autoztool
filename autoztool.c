@@ -1,7 +1,6 @@
-/* $Header: /cvs/autoztool/autoztool.c,v 1.5 2003-08-18 22:23:59 richard Exp $ */
 /* 
  *  This file is part of autoztool
- *  Copyright (C) 2001, 2003 Richard Kettlewell
+ *  Copyright (C) 2001, 2003, 2010 Richard Kettlewell
  *  
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

@@ -1,3 +1,10 @@
+autoztool (0.2.1) unstable; urgency=low
+
+  * Various Lintian fixes
+  * Minor source tidy-ups
+
+ -- Richard Kettlewell <rjk@greenend.org.uk>  Sat, 06 Mar 2010 10:23:19 +0000
+
 autoztool (0.2-1) unstable; urgency=low
 
   * fix installation of shared object
