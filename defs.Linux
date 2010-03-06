@@ -1,0 +1,2 @@
+MODULE=autoztool.so
+VARIABLE=LD_PRELOAD

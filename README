@@ -13,7 +13,8 @@ convenient multi-file interface).
 Supported Systems
 -----------------
 
-Works for me on Debian GNU/Linux with libc6 2.1.3 and 2.2.2.
+Works for me on Debian GNU/Linux.
+Works (possibly with some limitations) on OS X.
 
 Installation
 ------------

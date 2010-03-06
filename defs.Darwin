@@ -1,0 +1,3 @@
+MODULE=autoztool.dylib
+VARIABLE=DYLD_INSERT_LIBRARIES
+mandir=${prefix}/share/man
