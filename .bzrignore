@@ -4,3 +4,4 @@ CVS
 z
 debian/files
 debian/autoztool
+debian/substvars.*

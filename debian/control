@@ -5,12 +5,14 @@ Standards-Version: 3.0.1.0
 
 Package: autoztool
 Architecture: any
+Section: utils
+Depends: ${shlibs:Depends}
 Description: Automatic inline decompression
-  This package provides a command called "z", which executes the command
-  found on its command line, in an environment in which compressed files
-  are automatically and mostly transparently decompressed when they are
-  opened for reading.
-  .
-  The intent is to use it with commands like less(1) to enable graceful
-  handling of compressed files (the zless wrapper has a much less
-  convenient multi-file interface).
+ This package provides a command called "z", which executes the command
+ found on its command line, in an environment in which compressed files
+ are automatically and mostly transparently decompressed when they are
+ opened for reading.
+ .
+ The intent is to use it with commands like less(1) to enable graceful
+ handling of compressed files (the zless wrapper has a much less
+ convenient multi-file interface).

@@ -18,8 +18,7 @@ pkg-autoztool:
 		debian/autoztool/usr/share/doc/autoztool/copyright
 	cp debian/changelog \
 		debian/autoztool/usr/share/doc/autoztool/changelog.Debian
-	gzip -9 debian/autoztool/usr/share/doc/autoztool/copyright \
-		debian/autoztool/usr/share/doc/autoztool/changelog.Debian
+	gzip -9 debian/autoztool/usr/share/doc/autoztool/changelog.Debian
 	mkdir -p debian/autoztool/usr/bin
 	mkdir -p debian/autoztool/usr/lib/autoztool
 	mkdir -p debian/autoztool/usr/share/man/man1
@@ -28,8 +27,12 @@ pkg-autoztool:
 	$(INSTALL) -m 644 z.1 \
 		debian/autoztool/usr/share/man/man1/z.1
 	gzip -9 debian/autoztool/usr/share/man/man1/z.1
-	$(INSTALL) -m 755 autoztool.so debian/autoztool/usr/lib/autoztool/autoztool.so
-	dpkg-gencontrol -isp -pautoztool -Pdebian/autoztool
+	$(INSTALL) -m 755 autoztool.so \
+		debian/autoztool/usr/lib/autoztool/autoztool.so
+	strip --strip-unneeded debian/autoztool/usr/lib/autoztool/autoztool.so
+	dpkg-shlibdeps -Tdebian/substvars.autoztool \
+		debian/autoztool/usr/lib/autoztool/*
+	dpkg-gencontrol -isp -pautoztool -Pdebian/autoztool -Tdebian/substvars.autoztool
 	chown -R root:root debian/autoztool
 	chmod -R g-ws debian/autoztool
 	dpkg --build debian/autoztool ..
