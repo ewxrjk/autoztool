@@ -27,7 +27,7 @@ pkglibdir=${libdir}/autoztool
 
 include defs.$(shell uname -s)
 
-VERSION=0.2.1
+VERSION=0.3
 
 INSTALL=install -c
 
