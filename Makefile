@@ -52,7 +52,7 @@ uninstall:
 	rm -f $(bindir)/z
 	rm -f $(libdir)/autoztool/autoztool.so
 	rm -f $(man1dir)/z.1
-	rm -f $(libdir)/autoztool
+	-rmdir $(libdir)/autoztool
 
 installdirs:
 	mkdir -p $(libdir)
