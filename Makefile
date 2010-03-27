@@ -51,7 +51,7 @@ z.check: z.m4 Makefile
 	mv $@.tmp $@
 	chmod 755 $@
 
-$(SHLIB): autoztool.lo
+$(MODULE): autoztool.lo
 	$(CC) $(CFLAGS) $(SHAREFLAGS) -o $@ $^ $(LIBS)
 
 install: installdirs
