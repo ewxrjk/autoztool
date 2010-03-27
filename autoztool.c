@@ -36,6 +36,18 @@
 # define PATH_MAX 4096
 #endif
 
+#if __APPLE__
+#define __autoztool_open open
+#endif
+
+#if __linux__
+#define LIBC_OPEN "__open"
+#endif
+
+#ifndef LIBC_OPEN
+# define LIBC_OPEN "open"
+#endif
+
 static const struct {
   const char *ext;
   const char *prog;
@@ -138,7 +150,7 @@ static int wrapped_open(const char *path, int flags, mode_t mode,
 
     /* any non-ignored signals with non-default handlers must be reset
        before we restore the signal mask */
-    for(s = 1; s < _NSIG; ++s) {
+    for(s = 1; s < NSIG; ++s) {
       struct sigaction old;
       
       sigaction(s, 0, &old);
@@ -152,7 +164,11 @@ static int wrapped_open(const char *path, int flags, mode_t mode,
 
     /* XXX actually we just want to remove ourselves from LD_PRELOAD,
        preferrably regardless of what name we were called under */
+#if __APPLE__
+    unsetenv("DYLD_INSEERT_LIBRARIES");
+#else
     unsetenv("LD_PRELOAD");
+#endif
 
     /* dup the FDs into place */
     if(dup2(readfd, 0) < 0
@@ -234,15 +250,15 @@ int __autoztool_open(const char *path, int flags, ...) {
   static int depth;
   static int (*real_open)(const char *path, int flags, ...);
 
- int n;
+  int n;
   mode_t mode;
   va_list ap;
 
   if(!real_open)
-    real_open = dlsym(RTLD_NEXT, "__open");
+    real_open = dlsym(RTLD_NEXT, LIBC_OPEN);
   if(flags & O_CREAT) {
     va_start(ap, flags);
-    mode = va_arg(ap, mode_t);
+    mode = va_arg(ap, int);
     va_end(ap);
   } else
     mode = 0;
@@ -255,6 +271,7 @@ int __autoztool_open(const char *path, int flags, ...) {
   return n;
 }
 
+#if __linux__
 int open(const char *path, int flags, ...)
   __attribute__((weak, alias("__autoztool_open")));
 
@@ -266,6 +283,7 @@ int open64(const char *path, int flags, ...)
 
 int __open64(const char *path, int flags, ...)
   __attribute__((weak, alias("__autoztool_open")));
+#endif
 
 /*
 Local Variables:

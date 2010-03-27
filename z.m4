@@ -44,10 +44,12 @@ case "$1" in
   ;;
 esac
 
-if test "x$LD_PRELOAD" = "x"; then
-  LD_PRELOAD=pkglibdir/autoztool.so
+if test "x$__variable__" = "x"; then
+  __variable__=pkglibdir/__module__
 else
-  LD_PRELOAD="pkglibdir/autoztool.so:$LD_PRELOAD"
+  __variable__="pkglibdir/__module__:$__VARIABLE__"
 fi
-export LD_PRELOAD
+export __variable__
+DYLD_FORCE_FLAT_NAMESPACE=yes
+export DYLD_FORCE_FLAT_NAMESPACE
 exec "$@"

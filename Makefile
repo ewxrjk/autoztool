@@ -25,32 +25,36 @@ mandir=${prefix}/man
 man1dir=${mandir}/man1
 pkglibdir=${libdir}/autoztool
 
+include defs.$(shell uname -s)
+
 VERSION=0.2.1
 
-CC=gcc
-CFLAGS=-Wall -W
 INSTALL=install -c
 
-all: autoztool.so z
+all: ${MODULE} z
 
 z: z.m4 Makefile
-	m4 -Dpkglibdir="${pkglibdir}" -DVERSION="${VERSION}" z.m4 > z.tmp
+	m4 -Dpkglibdir="${pkglibdir}" \
+		-DVERSION="${VERSION}" \
+		-D__module__=${MODULE} \
+		-D__variable__=${VARIABLE} \
+		z.m4 > z.tmp
 	mv z.tmp z
 	chmod 755 z
 
-autoztool.so: autoztool.lo
-	gcc -shared -o autoztool.so autoztool.lo -ldl -lc
+$(SHLIB): autoztool.lo
+	$(CC) $(CFLAGS) $(SHAREFLAGS) -o $@ $^ $(LIBS)
 
 install: installdirs
 	$(INSTALL) -m 755 z $(bindir)/z
-	$(INSTALL) -m 644 autoztool.so $(libdir)/autoztool/autoztool.so 
+	$(INSTALL) -m 644 ${MODULE} $(libdir)/autoztool/${MODULE} 
 	$(INSTALL) -m 644 z.1 $(man1dir)/z.1
 
 install-strip: install
 
 uninstall:
 	rm -f $(bindir)/z
-	rm -f $(libdir)/autoztool/autoztool.so
+	rm -f $(libdir)/autoztool/${MODULE}
 	rm -f $(man1dir)/z.1
 	-rmdir $(libdir)/autoztool
 
@@ -63,6 +67,7 @@ installdirs:
 clean:
 	rm -f *.so
 	rm -f *.lo
+	rm -f *.dylib
 	rm -f z
 
 dist:

@@ -1,0 +1,7 @@
+MODULE=autoztool.dylib
+VARIABLE=DYLD_INSERT_LIBRARIES
+mandir=${prefix}/share/man
+CC=gcc
+CFLAGS=-Wall -W -arch i386 -arch x86_64 -arch ppc
+SHAREFLAGS=-flat_namespace -dynamiclib
+SHLIB=autoztool.dylib
