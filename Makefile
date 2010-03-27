@@ -74,6 +74,7 @@ dist:
 	rm -rf autoztool-${VERSION}
 	mkdir autoztool-${VERSION}
 	cp COPYING Makefile README *.c z.m4 z.1 autoztool-${VERSION} 
+	cp defs.Linux defs.Darwin autoztool-${VERSION}
 	mkdir autoztool-${VERSION}/debian
 	cp debian/changelog autoztool-${VERSION}/debian
 	cp debian/control debian/copyright autoztool-${VERSION}/debian
