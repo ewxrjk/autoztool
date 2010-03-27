@@ -29,8 +29,6 @@ include defs.$(shell uname -s)
 
 VERSION=0.2.1
 
-CC=gcc
-CFLAGS=-Wall -W
 INSTALL=install -c
 
 all: ${MODULE} z
@@ -44,11 +42,8 @@ z: z.m4 Makefile
 	mv z.tmp z
 	chmod 755 z
 
-autoztool.so: autoztool.lo
-	gcc -shared -o autoztool.so autoztool.lo -ldl -lc
-
-autoztool.dylib: autoztool.c
-	gcc -W -Wall -flat_namespace -dynamiclib -o autoztool.dylib autoztool.c
+$(SHLIB): autoztool.lo
+	$(CC) $(CFLAGS) $(SHAREFLAGS) -o $@ $^ $(LIBS)
 
 install: installdirs
 	$(INSTALL) -m 755 z $(bindir)/z

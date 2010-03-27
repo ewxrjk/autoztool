@@ -14,7 +14,7 @@ Supported Systems
 -----------------
 
 Works for me on Debian GNU/Linux.
-Works (possibly with some limitations) on OS X.
+Works (with some limitations!) on OS X (not tested on PPC).
 
 Installation
 ------------
