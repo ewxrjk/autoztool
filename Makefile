@@ -42,6 +42,15 @@ z: z.m4 Makefile
 	mv z.tmp z
 	chmod 755 z
 
+z.check: z.m4 Makefile
+	m4 -Dpkglibdir=`pwd` \
+		-DVERSION="${VERSION}" \
+		-D__module__=${MODULE} \
+		-D__variable__=${VARIABLE} \
+		z.m4 > $@.tmp
+	mv $@.tmp $@
+	chmod 755 $@
+
 $(SHLIB): autoztool.lo
 	$(CC) $(CFLAGS) $(SHAREFLAGS) -o $@ $^ $(LIBS)
 
@@ -69,6 +78,16 @@ clean:
 	rm -f *.lo
 	rm -f *.dylib
 	rm -f z
+	rm -f z.check
+	rm -f testfile testfile.gz testoutput
+
+check: all z.check
+	rm -f testfile testfile.gz
+	cp z.m4 testfile
+	gzip -9 testfile
+	./z.check cat testfile.gz > testoutput
+	cmp z.m4 testoutput
+	rm -f testfile testfile.gz testoutput
 
 dist:
 	rm -rf autoztool-${VERSION}
@@ -86,7 +105,7 @@ dist:
 
 distcheck: dist
 	tar xfz autoztool-${VERSION}.tar.gz
-	cd autoztool-${VERSION} && make
+	cd autoztool-${VERSION} && make check
 	cd autoztool-${VERSION} && make install prefix=distcheck/usr/local
 	rm -rf autoztool-${VERSION}
 

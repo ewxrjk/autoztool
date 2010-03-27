@@ -8,3 +8,4 @@ debian/substvars.*
 autoztool-*.tar.gz
 *.deb
 *.dylib
+z.check
