@@ -1,0 +1,6 @@
+MODULE=autoztool.so
+VARIABLE=LD_PRELOAD
+CC=gcc
+CFLAGS=-Wall -W
+SHAREFLAGS=-shared
+LIBS=

@@ -13,7 +13,7 @@ convenient multi-file interface).
 Supported Systems
 -----------------
 
-Works for me on Debian GNU/Linux.
+Works for me on Debian GNU/Linux and FreeBSD.
 Works (with some limitations!) on OS X (not tested on PPC).
 
 Installation
@@ -25,6 +25,8 @@ To install in PREFIX:
   make prefix=PREFIX install         # as root if appropriate
 
 If prefix is not overridden, /usr/local is assumed.
+
+On FreeBSD, use gmake.
 
 Feedback
 --------
