@@ -1,0 +1,8 @@
+# NB does not work
+MODULE=autoztool.so
+VARIABLE=LD_PRELOAD
+CC=gcc
+CFLAGS=-Wall -W
+SHAREFLAGS=-shared
+LIBS=-ldl -lc
+INSTALL=./install-sh

@@ -24,12 +24,12 @@ libdir=${prefix}/lib
 mandir=${prefix}/man
 man1dir=${mandir}/man1
 pkglibdir=${libdir}/autoztool
+INSTALL=install -c
 
 include defs.$(shell uname -s)
 
 VERSION=0.3+
 
-INSTALL=install -c
 
 all: ${MODULE} z
 

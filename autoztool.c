@@ -44,6 +44,10 @@
 # define __autoztool_open open
 #endif
 
+#if __sun__
+# define __autoztool_open open
+#endif
+
 #if __linux__
 #define LIBC_OPEN "__open"
 #endif
