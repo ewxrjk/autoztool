@@ -22,6 +22,7 @@ set -e
 
 pkg=autoztool                   # package name
 version=$(make echo-version)    # get version number
+debversion=$(perl -lne '/\((.*)\)/ && print $1;exit' debian/changelog) # deb version number
 source=${pkg}-${version}        # source directory
 archive=${pkg}-${version}.tar.gz # tarball
 
@@ -50,7 +51,7 @@ r() {
 build() {
   local host=$1
   local arch=$2
-  local deb="${pkg}_${version}_${arch}.deb"
+  local deb="${pkg}_${debversion}_${arch}.deb"
 
   echo
   echo "Build on $host for $arch"
@@ -61,8 +62,7 @@ build() {
   r $host "cd _builds && tar xfz ${archive}"
   r $host "cd _builds/${source} && debian/rules build"
   r $host "cd _builds/${source} && fakeroot debian/rules binary"
-  s scp $host:_builds/$deb .
-  products="$products $deb"
+  s scp $host:_builds/$deb products/.
   echo
   echo "Built $deb"
   echo
@@ -70,7 +70,9 @@ build() {
 
 # Build the source archive
 s make distcheck
-products="$archive"
+rm -rf products
+mkdir products
+cp ${archive} products/.
 
 # Build .deb files
 s build araminta amd64          # squeeze
@@ -80,8 +82,4 @@ s build sandestin i386          # squeeze
 echo
 echo Final build products:
 echo
-ls -l ${products}
-
-# ...and on a single line for easy C+P
-echo
-echo ${products}
+ls -l products
