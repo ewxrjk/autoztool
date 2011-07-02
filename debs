@@ -73,8 +73,8 @@ s make distcheck
 products="$archive"
 
 # Build .deb files
-s build araminta amd64          # lenny
-s build erjin i386              # etch (works on lenny too)
+s build araminta amd64          # squeeze
+s build sandestin i386          # squeeze
 
 # List built products
 echo
