@@ -1,6 +1,6 @@
 /* 
  *  This file is part of autoztool
- *  Copyright (C) 2001, 2003, 2010 Richard Kettlewell
+ *  Copyright (C) 2001, 2003, 2010, 2011 Richard Kettlewell
  *  
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,14 +38,17 @@
 
 #if __APPLE__
 #define __autoztool_open open
+#define __autoztool_fopen fopen
 #endif
 
 #if __FreeBSD__
 # define __autoztool_open open
+# define __autoztool_open fopen
 #endif
 
 #if __sun__
 # define __autoztool_open open
+# define __autoztool_open fopen
 #endif
 
 #if __linux__
@@ -54,6 +57,10 @@
 
 #ifndef LIBC_OPEN
 # define LIBC_OPEN "open"
+#endif
+
+#ifndef LIBC_FOPEN
+# define LIBC_FOPEN "fopen"
 #endif
 
 static const struct {
@@ -66,12 +73,26 @@ static const struct {
   {".bz2", "bunzip2"},
 };
 
+static int (*real_open)(const char *path, int flags, ...);
+static FILE *(*real_fopen)(const char *, const char *);
+
 #define NTAB (int)(sizeof tab / sizeof *tab)
 
-static int wrapped_open(const char *path, int flags, mode_t mode,
-			int (*real_open)(const char *path, int flags, ...)) {
+static int get_file_type(const char *path) {
   int n;
-  size_t l;
+  /* see if the file extension is that of a compressed file */
+  size_t l = strlen(path);
+  for(n = 0; n < NTAB; ++n) {
+    size_t e = strlen(tab[n].ext);
+    if(e <= l
+       && !strcmp(path + l - e, tab[n].ext))
+      return n;
+  }
+  return -1;
+}
+
+/* Decompress PATH to a temporary file and return the FD for it */
+static int decompress(const char *path, int file_type, int flags) {
   char tmp[PATH_MAX];
   int readfd = -1, tmpfd = -1, retfd = -1, nullfd = -1;
   const char *tmpdir;
@@ -79,23 +100,8 @@ static int wrapped_open(const char *path, int flags, mode_t mode,
   pid_t pid, r;
   int save;
   int w;
-
-  /* we assume that O_RDONLY, O_WRONLY, O_RDWR occupy the bottom two
-     bits only. */
-  if((flags & 3) != O_RDONLY)
-    return (*real_open)(path, flags, mode);
-  /* see if the file extension is that of a compressed file */
-  l = strlen(path);
-  for(n = 0; n < NTAB; ++n) {
-    size_t e = strlen(tab[n].ext);
-    if(e <= l
-       && !strcmp(path + l - e, tab[n].ext))
-      break;
-  }
-  if(n >= NTAB)
-    return (*real_open)(path, flags, mode);
+ 
   tmp[0] = 0;			/* suppress unlink */
-
   /* open() is documented as using the lowest currently-unused FD, so
      we occupy that FD number until we're ready to open the file we'll
      eventually return.  An alternative would be to delay the open
@@ -111,12 +117,11 @@ static int wrapped_open(const char *path, int flags, mode_t mode,
   
   /* open the real file - we could do this in the child, but then we
      couldn't report errors as easily */
-  if((readfd = (*real_open)(path, flags, mode)) < 0)
+  if((readfd = (*real_open)(path, flags)) < 0)
     goto error;
   if(!(tmpdir = getenv("TMPDIR")))
     tmpdir = "/tmp";
   snprintf(tmp, sizeof tmp, "%s/zXXXXXX", tmpdir);
-
   /* create the temporary file */
   if((tmpfd = mkstemp(tmp)) < 0)
     goto error;
@@ -127,7 +132,7 @@ static int wrapped_open(const char *path, int flags, mode_t mode,
   nullfd = -1;
 
   /* re-open the temporary file, using the free slot in the FD table */
-  if((retfd = (*real_open)(tmp, flags, mode)) < 0)
+  if((retfd = (*real_open)(tmp, flags)) < 0)
     goto error;
 
   /* now we've opened retfd, we can unlink the temporary file */
@@ -192,7 +197,7 @@ static int wrapped_open(const char *path, int flags, mode_t mode,
     }
 
     /* execute the decompressor */
-    execlp(tab[n].prog, tab[n].prog, (const char *)0);
+    execlp(tab[file_type].prog, tab[file_type].prog, (const char *)0);
     perror("execlp");
     _exit(-1);
   }
@@ -230,7 +235,7 @@ static int wrapped_open(const char *path, int flags, mode_t mode,
   if(r < 0 || w != 0) {
     close(retfd);
     if(r >= 0) {
-      fprintf(stderr, "%s exited with wstat %#x\n", tab[n].prog, (unsigned)w);
+      fprintf(stderr, "%s exited with wstat %#x\n", tab[file_type].prog, (unsigned)w);
       errno = EIO;		/* child failed */
     } else
       errno = save;
@@ -254,9 +259,22 @@ error:
   return -1;
 }
 
+static int wrapped_open(const char *path, int flags, mode_t mode) {
+  int file_type;
+
+  /* we assume that O_RDONLY, O_WRONLY, O_RDWR occupy the bottom two
+     bits only. */
+  if((flags & 3) != O_RDONLY)
+    return (*real_open)(path, flags, mode);
+  /* see if the file extension is that of a compressed file */
+  if((file_type = get_file_type(path)) < 0)
+    return (*real_open)(path, flags, mode);
+  return decompress(path, file_type, flags);
+}
+
+/* Replacement for Libc's open() */
 int __autoztool_open(const char *path, int flags, ...) {
   static int depth;
-  static int (*real_open)(const char *path, int flags, ...);
 
   int n;
   mode_t mode;
@@ -274,9 +292,28 @@ int __autoztool_open(const char *path, int flags, ...) {
   if(depth > 1)
     n = (*real_open)(path, flags, mode);
   else
-    n = wrapped_open(path, flags, mode, real_open);
+    n = wrapped_open(path, flags, mode);
   depth--;
   return n;
+}
+
+/* Replacement for Libc's fopen().  Only required on platforms where
+ * the internal open() call cannot be interposed. */
+FILE *__autoztool_fopen(const char *path, const char *mode) {
+  int file_type, fd;
+
+  if(!real_open)
+    real_open = dlsym(RTLD_NEXT, LIBC_OPEN);
+  if(!real_fopen)
+    real_fopen = dlsym(RTLD_NEXT, LIBC_FOPEN);
+  if(strcmp(mode, "r") && strcmp(mode, "rb"))
+    return real_fopen(path, mode);
+  if((file_type = get_file_type(path)) < 0)
+    return real_fopen(path, mode);
+  fd = decompress(path, file_type, O_RDONLY);
+  if(fd < 0)
+    return NULL;
+  return fdopen(fd, mode);
 }
 
 #if __linux__
@@ -291,6 +328,9 @@ int open64(const char *path, int flags, ...)
 
 int __open64(const char *path, int flags, ...)
   __attribute__((weak, alias("__autoztool_open")));
+
+FILE *fopen(const char *, const char *)
+  __attribute__((weak, alias("__autoztool_fopen")));
 #endif
 
 /*
