@@ -1,3 +1,10 @@
+autoztool (0.4) unstable; urgency=low
+
+  * Interpose fopen() as well
+  * Use Debian build flags (on Debian systems!)
+
+ -- Richard Kettlewell <rjk@greenend.org.uk>  Tue, 14 Jan 2014 19:00:17 +0000
+
 autoztool (0.3) unstable; urgency=low
 
   * Limited MacOS support.
