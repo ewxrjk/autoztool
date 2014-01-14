@@ -52,7 +52,7 @@ z.check: z.m4 Makefile
 	chmod 755 $@
 
 $(MODULE): autoztool.lo
-	$(CC) $(CFLAGS) $(SHAREFLAGS) -o $@ $^ $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(SHAREFLAGS) -o $@ $^ $(LIBS)
 
 install: installdirs
 	$(INSTALL) -m 755 z $(bindir)/z

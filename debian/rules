@@ -1,6 +1,12 @@
 #! /usr/bin/make -f
 #
 
+CPPFLAGS:=$(shell dpkg-buildflags --get CPPFLAGS)
+CFLAGS:=$(shell dpkg-buildflags --get CFLAGS) -Wall -W
+CXXFLAGS:=$(shell dpkg-buildflags --get CXXFLAGS) -Wall -W
+LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS)
+export CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+
 INSTALL=install
 CHANGELOG=changelog
 
