@@ -41,7 +41,14 @@ r() {
   local host=$1
   shift
   echo "$host:" "$@" >&2
-  ssh $host "$@"
+  case $host in
+  chroot:* )
+    schroot -pc${host#*:} -- bash -c "$@"
+    ;;
+  * )
+    ssh $host "$@"
+    ;;
+  esac
 }
 
 # build HOST ARCH
@@ -56,13 +63,27 @@ build() {
   echo
   echo "Build on $host for $arch"
   echo
-  r $host "mkdir -p _builds"
-  r $host "cd _builds && rm -rf ${source} ${archive} ${deb}"
-  s scp ${archive} $host:_builds/.
-  r $host "cd _builds && tar xfz ${archive}"
-  r $host "cd _builds/${source} && debian/rules build"
-  r $host "cd _builds/${source} && fakeroot debian/rules binary"
-  s scp $host:_builds/$deb products/.
+  r $host "cd && mkdir -p _builds"
+  r $host "cd \$HOME/_builds && rm -rf ${source} ${archive} ${deb}"
+  case $host in
+  chroot:* )
+    s cp ${archive} $HOME/_builds
+    ;;
+  * )
+    s scp ${archive} $host:_builds/.
+    ;;
+  esac
+  r $host "cd \$HOME/_builds && tar xfz ${archive}"
+  r $host "cd \$HOME/_builds/${source} && debian/rules build"
+  r $host "cd \$HOME/_builds/${source} && fakeroot debian/rules binary"
+  case $host in
+  chroot:* )
+    s cp $HOME/_builds/$deb products/.
+    ;;
+  * )
+    s scp $host:_builds/$deb products/.
+    ;;
+  esac
   echo
   echo "Built $deb"
   echo
@@ -75,8 +96,8 @@ mkdir products
 cp ${archive} products/.
 
 # Build .deb files
-s build araminta amd64          # squeeze
-s build sandestin i386          # squeeze
+s build araminta amd64
+s build chroot:wheezy32 i386
 
 # List built products
 echo
