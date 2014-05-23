@@ -43,12 +43,12 @@
 
 #if __FreeBSD__
 # define __autoztool_open open
-# define __autoztool_open fopen
+# define __autoztool_fopen fopen
 #endif
 
 #if __sun__
 # define __autoztool_open open
-# define __autoztool_open fopen
+# define __autoztool_fopen fopen
 #endif
 
 #if __linux__
