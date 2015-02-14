@@ -25,7 +25,7 @@ pkg-autoztool:
 		debian/autoztool/usr/share/doc/autoztool/copyright
 	cp debian/changelog \
 		debian/autoztool/usr/share/doc/autoztool/${CHANGELOG}
-	gzip -9 debian/autoztool/usr/share/doc/autoztool/${CHANGELOG}
+	gzip -9n debian/autoztool/usr/share/doc/autoztool/${CHANGELOG}
 	mkdir -p debian/autoztool/usr/bin
 	mkdir -p debian/autoztool/usr/lib/autoztool
 	mkdir -p debian/autoztool/usr/share/man/man1
@@ -33,7 +33,7 @@ pkg-autoztool:
 		debian/autoztool/usr/bin/z
 	$(INSTALL) -m 644 z.1 \
 		debian/autoztool/usr/share/man/man1/z.1
-	gzip -9 debian/autoztool/usr/share/man/man1/z.1
+	gzip -9n debian/autoztool/usr/share/man/man1/z.1
 	$(INSTALL) -m 755 autoztool.so \
 		debian/autoztool/usr/lib/autoztool/autoztool.so
 	strip --strip-unneeded \
