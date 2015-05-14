@@ -1,6 +1,6 @@
 /* 
  *  This file is part of autoztool
- *  Copyright (C) 2001, 2003, 2010, 2011 Richard Kettlewell
+ *  Copyright (C) 2001, 2003, 2010, 2011, 2014, 2015 Richard Kettlewell
  *  
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@
 # define __autoztool_fopen fopen
 #endif
 
-#if __linux__
+#if __linux__ || __GNU__
 #define LIBC_OPEN "__open"
 #endif
 
@@ -316,7 +316,7 @@ FILE *__autoztool_fopen(const char *path, const char *mode) {
   return fdopen(fd, mode);
 }
 
-#if __linux__
+#if __linux__ || __GNU__
 int open(const char *path, int flags, ...)
   __attribute__((weak, alias("__autoztool_open")));
 
