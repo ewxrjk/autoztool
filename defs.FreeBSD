@@ -1,5 +1,5 @@
 MODULE=autoztool.so
 VARIABLE=LD_PRELOAD
-CC=cc -Wall -W
+CC?=cc -Wall -W
 SHAREFLAGS=-shared
-LIBS=
+LIBS?=
