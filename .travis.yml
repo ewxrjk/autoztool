@@ -1,0 +1,10 @@
+dist: trusty
+sudo: required
+language: c
+compiler:
+- clang
+- gcc
+
+script:
+- make
+- make check
