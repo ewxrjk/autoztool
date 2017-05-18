@@ -1,5 +1,5 @@
 Source: autoztool
-Maintainer: Richard Kettlewell <richard+autoztool@sfere.greenend.org.uk>
+Maintainer: Richard Kettlewell <rjk@greenend.org.uk>
 Priority: optional
 Standards-Version: 3.0.1.0
 Vcs-Git: git://github.com/ewxrjk/autoztool.git
