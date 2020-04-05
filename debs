@@ -97,7 +97,6 @@ cp ${archive} products/.
 
 # Build .deb files
 s build araminta amd64
-s build chroot:wheezy32 i386
 
 # List built products
 echo
