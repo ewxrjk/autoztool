@@ -28,7 +28,7 @@ INSTALL=install -c
 
 include defs.$(shell uname -s)
 
-VERSION=0.4
+VERSION=0.5
 
 all: ${MODULE} z
 

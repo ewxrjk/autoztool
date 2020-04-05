@@ -1,3 +1,9 @@
+autoztool (0.5) stable; urgency=medium
+
+  * More reproducible builds.
+
+ -- Richard Kettlewell <rjk@terraraq.org.uk>  Sun, 05 Apr 2020 12:33:58 +0100
+
 autoztool (0.4) unstable; urgency=low
 
   * Interpose fopen() as well
